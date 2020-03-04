@@ -18,7 +18,9 @@ class SearchWidget extends StatefulWidget {
   _SearchWidgetState createState() => _SearchWidgetState();
 }
 
-class _SearchWidgetState extends State<SearchWidget>{
+class _SearchWidgetState extends State<SearchWidget> {
+  String hintText = 'Add';
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +66,22 @@ class _SearchWidgetState extends State<SearchWidget>{
             );
           }
 
-          return new CircularProgressIndicator();
+          return Container(
+            padding: EdgeInsets.only(
+              top: SizeConfig.safeBlockVertical * 30,
+            ),
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: 50.0,
+              width: 50.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(
+                  Colors.deepOrange,
+                ),
+                strokeWidth: 4.0,
+              ),
+            ),
+          );
         },
       );
     }
@@ -77,7 +94,7 @@ class _SearchWidgetState extends State<SearchWidget>{
         children: <Widget>[
           TextFieldInputWidget(
             textFieldHint: 'Add ingredients',
-            buttonHint: 'Add',
+            buttonHint: hintText,
             notifyParent: refresh,
           ),
           Container(
@@ -144,13 +161,14 @@ class _SearchWidgetState extends State<SearchWidget>{
   }
 
   void onViewDetails(id, title, time, servings) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailsWidget(
-            foodId: id, title: title, time: time, servings: servings),
-      ),
-    );
+    Navigator.of(context).push(_createRoute(id, title, time, servings));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => DetailsWidget(
+    //         foodId: id, title: title, time: time, servings: servings),
+    //   ),
+    // );
   }
 
   void onDeleteChip(index) {
@@ -163,7 +181,12 @@ class _SearchWidgetState extends State<SearchWidget>{
 
   void refresh(String newItem) {
     setState(() {
-      widget.ingredients.add(newItem);
+      if (newItem == null) {
+        hintText = 'Add';
+      } else {
+        widget.ingredients.add(newItem);
+        hintText = 'Clear';
+      }
     });
 
     onModifyIngredients();
@@ -175,5 +198,29 @@ class _SearchWidgetState extends State<SearchWidget>{
         ingredients: widget.ingredients,
       );
     });
+  }
+
+  Route _createRoute(id, title, time, servings) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => DetailsWidget(
+        foodId: id,
+        title: title,
+        time: time,
+        servings: servings,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 }

@@ -18,6 +18,9 @@ class ExploreWidget extends StatefulWidget {
 }
 
 class _ExploreWidgetState extends State<ExploreWidget> {
+  String title = 'Recommended';
+  String hintText = 'Search';
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +37,7 @@ class _ExploreWidgetState extends State<ExploreWidget> {
         children: <Widget>[
           TextFieldInputWidget(
             textFieldHint: 'Search for recipes...',
-            buttonHint: 'Search',
+            buttonHint: hintText,
             notifyParent: refresh,
           ),
           Expanded(
@@ -47,7 +50,7 @@ class _ExploreWidgetState extends State<ExploreWidget> {
                     left: SizeConfig.safeBlockHorizontal,
                   ),
                   child: Text(
-                    'Recommended',
+                    title,
                     style: TextStyle(
                       fontSize: SizeConfig.safeBlockHorizontal * 6,
                       fontWeight: FontWeight.w500,
@@ -84,26 +87,24 @@ class _ExploreWidgetState extends State<ExploreWidget> {
                       return Column(
                         children: foodCards,
                       );
-                    } else {
-                      return InkWell(
-                        onTap: () {
-                          onViewDetails(
-                            220,
-                            'Test',
-                            12,
-                            6,
-                          );
-                        },
-                        child: CardWidget(
-                          id: 220,
-                          title: 'Test',
-                          time: 12,
-                          servings: 6,
-                        ),
-                      );
                     }
 
-                    return new CircularProgressIndicator();
+                    return Container(
+                      padding: EdgeInsets.only(
+                        top: SizeConfig.safeBlockVertical * 30,
+                      ),
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        height: 50.0,
+                        width: 50.0,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(
+                            Colors.deepOrange,
+                          ),
+                          strokeWidth: 4.0,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -115,13 +116,7 @@ class _ExploreWidgetState extends State<ExploreWidget> {
   }
 
   void onViewDetails(id, title, time, servings) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailsWidget(
-            foodId: id, title: title, time: time, servings: servings),
-      ),
-    );
+    Navigator.of(context).push(_createRoute(id, title, time, servings));
   }
 
   Future<RecipeSummary> fetchRecipe({String searchTerm = 'salad'}) async {
@@ -138,9 +133,39 @@ class _ExploreWidgetState extends State<ExploreWidget> {
   }
 
   void refresh(String searchTerm) {
-    print(searchTerm);
     setState(() {
-      widget.recipeSummary = fetchRecipe(searchTerm: searchTerm);
+      if (searchTerm == null) {
+        title = 'Recommended';
+        hintText = 'Search';
+      } else {
+        widget.recipeSummary = fetchRecipe(searchTerm: searchTerm);
+        title = 'Search results: ' + searchTerm;
+        hintText = 'Clear';
+      }
     });
+  }
+
+  Route _createRoute(id, title, time, servings) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => DetailsWidget(
+        foodId: id,
+        title: title,
+        time: time,
+        servings: servings,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 }

@@ -12,7 +12,9 @@ import 'equipement_summary.dart';
 import 'preparation_summary.dart';
 
 class DetailsWidget extends StatefulWidget {
-  const DetailsWidget({Key key, this.foodId, this.title, this.time, this.servings}) : super(key: key);
+  const DetailsWidget(
+      {Key key, this.foodId, this.title, this.time, this.servings})
+      : super(key: key);
 
   final int foodId;
   final String title;
@@ -50,12 +52,15 @@ class _DetailsWidgetState extends State<DetailsWidget>
               Container(
                 padding: EdgeInsets.only(
                   top: 10,
-                  left: 10,
+                  left: 5,
                 ),
-                child: Icon(
-                  Icons.arrow_back,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  iconSize: 30,
                   color: Colors.white,
-                  size: 28,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ),
               Container(
@@ -80,11 +85,10 @@ class _DetailsWidgetState extends State<DetailsWidget>
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(
-                        top: SizeConfig.safeBlockVertical * 4,
-                        bottom: SizeConfig.safeBlockVertical * 1.5,
-                        left: SizeConfig.safeBlockHorizontal * 5,
-                        right: SizeConfig.safeBlockHorizontal * 4
-                      ),
+                          top: SizeConfig.safeBlockVertical * 4,
+                          bottom: SizeConfig.safeBlockVertical * 1.5,
+                          left: SizeConfig.safeBlockHorizontal * 5,
+                          right: SizeConfig.safeBlockHorizontal * 4),
                       child: Text(
                         widget.title,
                         overflow: TextOverflow.visible,
@@ -190,7 +194,18 @@ class _DetailsWidgetState extends State<DetailsWidget>
                                   );
                                 }
 
-                                return CircularProgressIndicator();
+                                return Center(
+                                  child: SizedBox(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Colors.deepOrange,
+                                      ),
+                                      strokeWidth: 4.0,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             FutureBuilder(
@@ -206,7 +221,18 @@ class _DetailsWidgetState extends State<DetailsWidget>
                                   );
                                 }
 
-                                return CircularProgressIndicator();
+                                return Center(
+                                  child: SizedBox(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Colors.deepOrange,
+                                      ),
+                                      strokeWidth: 4.0,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             FutureBuilder(
@@ -221,7 +247,18 @@ class _DetailsWidgetState extends State<DetailsWidget>
                                       preparations: preparations);
                                 }
 
-                                return CircularProgressIndicator();
+                                return Center(
+                                  child: SizedBox(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Colors.deepOrange,
+                                      ),
+                                      strokeWidth: 4.0,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                           ],

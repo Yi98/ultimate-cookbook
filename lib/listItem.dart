@@ -27,7 +27,7 @@ class ListItem extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(
-              right: 8.0,
+              right: 10.0,
             ),
             child: Icon(
               Icons.check,
