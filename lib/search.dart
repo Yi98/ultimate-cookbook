@@ -162,13 +162,6 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   void onViewDetails(id, title, time, servings) {
     Navigator.of(context).push(_createRoute(id, title, time, servings));
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => DetailsWidget(
-    //         foodId: id, title: title, time: time, servings: servings),
-    //   ),
-    // );
   }
 
   void onDeleteChip(index) {
