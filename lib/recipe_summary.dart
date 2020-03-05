@@ -4,8 +4,10 @@ class RecipeSummary {
   RecipeSummary({this.results});
 
   factory RecipeSummary.fromJson(Map<String, dynamic> json) {
-    return RecipeSummary(
-      results: json['results'],
-    );
+    if (json['results'] != null) {
+      return RecipeSummary(results: json['results']);
+    } else {
+      return RecipeSummary(results: json['recipes']);
+    }
   }
 }

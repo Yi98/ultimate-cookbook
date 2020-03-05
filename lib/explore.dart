@@ -119,9 +119,16 @@ class _ExploreWidgetState extends State<ExploreWidget> {
     Navigator.of(context).push(_createRoute(id, title, time, servings));
   }
 
-  Future<RecipeSummary> fetchRecipe({String searchTerm = 'salad'}) async {
-    final response = await http.get(
-        'https://api.spoonacular.com/recipes/search?query=$searchTerm&number=3&apiKey=a2478859405e44f48b5d9037d3ec05c2');
+  Future<RecipeSummary> fetchRecipe({searchTerm: 'random'}) async {
+    var response;
+
+    if (searchTerm == 'random') {
+      response = await http.get(
+          'https://api.spoonacular.com/recipes/random?number=3&apiKey=a2478859405e44f48b5d9037d3ec05c2');
+    } else {
+      response = await http.get(
+          'https://api.spoonacular.com/recipes/search?query=$searchTerm&number=3&apiKey=a2478859405e44f48b5d9037d3ec05c2');
+    }
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -135,6 +142,7 @@ class _ExploreWidgetState extends State<ExploreWidget> {
   void refresh(String searchTerm) {
     setState(() {
       if (searchTerm == null) {
+        widget.recipeSummary = fetchRecipe();
         title = 'Recommended';
         hintText = 'Search';
       } else {
